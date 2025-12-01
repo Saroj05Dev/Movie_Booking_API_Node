@@ -1,6 +1,15 @@
 const Movie = require('../models/movie.model');
 const mongoose = require('mongoose');
 
+const createMovie = async (movieData) => {
+    const movie = await Movie.create(movieData);
+    return movie;
+}
+
+const deleteMovie = async (id) => {
+    await Movie.deleteOne({ _id: id });
+};
+
 const getMovieById = async (id) => {
 
     if (!mongoose.isValidObjectId(id)) {
@@ -22,4 +31,4 @@ const getMovieById = async (id) => {
     return movie;
 };
 
-module.exports = { getMovieById };
+module.exports = { getMovieById, createMovie };

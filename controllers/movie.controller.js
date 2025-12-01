@@ -1,5 +1,6 @@
 const Movie = require('../models/movie.model');
 const movieService = require('../services/movie.service');
+const { errorResponseBody, successResponseBody } = require('../utils/responseBody');
 
 /**
  * Controller function to create a new movie
@@ -8,53 +9,29 @@ const movieService = require('../services/movie.service');
  * @returns movie object in JSON format
  */
 
-const errorResponseBody = {
-    err: {},
-    data: {},
-    message: 'Something went wrong, please try again later',
-    success: false
-}
-
-const successResponseBody = {
-    err: {},
-    data: {},
-    message: 'Successfully processed request',
-    success: true
-}
 
 const createMovie = async (req, res) => {
     try {
         const movieData = req.body;
-        const movie = await Movie.create(movieData);
-        return res.status(201).json({
-            success: true,
-            data: movie,
-            message: 'Movie created successfully'
-        });
+        const movie = await movieService.createMovie(movieData);
+        successResponseBody.data = movie;
+        successResponseBody.message = 'Movie created successfully';
+        return res.status(201).json(successResponseBody);
     } catch (error) {
         console.error('Error creating movie:', error);
-        return res.status(500).json({
-            success: false,
-            message: 'Internal Server Error'
-        });
+        return res.status(500).json(errorResponseBody);
     }
 }
 
 const deleteMovie = async (req, res) => {
     try {
-        const movieId = req.params._id;
-        const movie = await Movie.deleteOne(movieId);
-        return res.status(200).json({
-            success: true,
-            data: movie,
-            message: 'Movie deleted successfully'
-        });
+        const response = await movieService.deleteMovie(req.params.id);
+        successResponseBody.data = response;
+        successResponseBody.message = 'Movie deleted successfully';
+        return res.status(200).json(successResponseBody);
     } catch (error) {
         console.error('Error creating movie:', error);
-        return res.status(500).json({
-            success: false,
-            message: 'Internal Server Error'
-        });
+        return res.status(500).json(errorResponseBody);
     }
 }
 
